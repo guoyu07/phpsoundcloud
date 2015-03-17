@@ -26,12 +26,12 @@
     </php>
     <testsuites>
         <testsuite name="PhpSoundCloud Test Suite">
-            <directory>./tests</directory>
+            <file>SoundCloudTest.php</file>
         </testsuite>
     </testsuites>
     <filters>
         <whitelist>
-            <directory>./source</directory>
+            <file>SoundCloud.php</file>
         </whitelist>
     </filters>
 </phpunit>
