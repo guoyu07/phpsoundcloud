@@ -23,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Alcohol\\": "source"
+            "Alcohol\\": "."
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Alcohol\\Tests\\":"tests"
+            "Alcohol\\Tests\\":"."
         }
     },
     "extra": {
