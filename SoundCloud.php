@@ -19,19 +19,19 @@ use GuzzleHttp\Client;
 class SoundCloud
 {
     /** @var string */
-    protected $clientId;
+    protected $client_id;
 
     /** @var string */
-    protected $clientSecret;
+    protected $client_secret;
 
     /** @var string */
-    protected $redirectUri;
+    protected $redirect_uri;
 
     /** @var string */
     protected $token;
 
     /** @var string */
-    protected $apiBase = 'https://api.soundcloud.com';
+    protected $api_base = 'https://api.soundcloud.com';
 
     /** @var ClientInterface */
     protected $client;
@@ -73,7 +73,7 @@ class SoundCloud
      */
     public function getApiBase()
     {
-        return $this->apiBase;
+        return $this->api_base;
     }
 
     /**
@@ -83,7 +83,7 @@ class SoundCloud
      */
     public function setApiBase($uri)
     {
-        $this->apiBase = $uri;
+        $this->api_base = $uri;
 
         return $this;
     }
@@ -137,17 +137,17 @@ class SoundCloud
      */
     public function getClientId()
     {
-        return $this->clientId;
+        return $this->client_id;
     }
 
     /**
      * @internal
-     * @param string $clientId
+     * @param string $client_id
      * @return $this
      */
-    public function setClientId($clientId)
+    public function setClientId($client_id)
     {
-        $this->clientId = $clientId;
+        $this->client_id = $client_id;
 
         return $this;
     }
@@ -158,17 +158,17 @@ class SoundCloud
      */
     public function getClientSecret()
     {
-        return $this->clientSecret;
+        return $this->client_secret;
     }
 
     /**
      * @internal
-     * @param string $clientSecret
+     * @param string $client_secret
      * @return $this
      */
-    public function setClientSecret($clientSecret)
+    public function setClientSecret($client_secret)
     {
-        $this->clientSecret = $clientSecret;
+        $this->client_secret = $client_secret;
 
         return $this;
     }
@@ -179,17 +179,17 @@ class SoundCloud
      */
     public function getRedirectUri()
     {
-        return $this->redirectUri;
+        return $this->redirect_uri;
     }
 
     /**
      * @internal
-     * @param string $redirectUri
+     * @param string $redirect_uri
      * @return $this
      */
-    public function setRedirectUri($redirectUri)
+    public function setRedirectUri($redirect_uri)
     {
-        $this->redirectUri = $redirectUri;
+        $this->redirect_uri = $redirect_uri;
 
         return $this;
     }
@@ -225,11 +225,11 @@ class SoundCloud
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#connect">api/reference#connect</a>
      * @param array $parameters
      *  Custom parameters can be provided to overrule the default.
-     * @param string $connectUri
+     * @param string $connect_uri
      *  Custom connect URI can be provided to overrule the default.
      * @return string
      */
-    public function getTokenAuthUri(array $parameters = [], $connectUri = 'https://soundcloud.com/connect')
+    public function getTokenAuthUri(array $parameters = [], $connect_uri = 'https://soundcloud.com/connect')
     {
         $query = http_build_query(
             array_merge(
@@ -244,7 +244,7 @@ class SoundCloud
             )
         );
 
-        return sprintf('%s?%s', $connectUri, $query);
+        return sprintf('%s?%s', $connect_uri, $query);
     }
 
     /**
