@@ -40,8 +40,9 @@ $options = [
 
 $soundcloud = new SoundCloud($options);
 
-// do stuff with it - see class for functionality, no docs yet
 ```
+
+Documentation might be available [here](http://alcohol.github.io/docs).
 
 ## Contributing
 

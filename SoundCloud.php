@@ -13,6 +13,9 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Client;
 
+/**
+ * Simplistic SoundCloud API wrapper.
+ */
 class SoundCloud
 {
     /** @var string */
@@ -37,26 +40,35 @@ class SoundCloud
     protected $headers = ['Accept' => 'application/json'];
 
     /**
-     * @param array $options
+     * Initializes a new instance of <tt>SoundCloud</tt>.
+     *
+     * @see <a href="http://soundcloud.com/you/apps/new">registering your application</a>
+     * @param array $config
+     *  An array containing the following keys ( and their values ):
+     *
+     *   - <tt>client_id</tt>
+     *   - <tt>client_secret</tt> [optional]
+     *   - <tt>redirect_uri</tt> [optional]
      */
-    public function __construct(array $options)
+    public function __construct(array $config)
     {
-        if (!isset($options['client_id'])) {
+        if (!isset($config['client_id'])) {
             throw new \BadMethodCallException('Missing required option: client_id');
         }
 
-        $this->setClientId($options['client_id']);
+        $this->setClientId($config['client_id']);
 
-        if (isset($options['client_secret'])) {
-            $this->setClientSecret($options['client_secret']);
+        if (isset($config['client_secret'])) {
+            $this->setClientSecret($config['client_secret']);
         }
 
-        if (isset($options['redirect_uri'])) {
-            $this->setRedirectUri($options['redirect_uri']);
+        if (isset($config['redirect_uri'])) {
+            $this->setRedirectUri($config['redirect_uri']);
         }
     }
 
     /**
+     * @internal
      * @return string
      */
     public function getApiBase()
@@ -65,8 +77,9 @@ class SoundCloud
     }
 
     /**
+     * Set the base URI of the SoundCloud API ( defaults to https://api.soundcloud.com ).
      * @param string $uri
-     * @return SoundCloud
+     * @return $this
      */
     public function setApiBase($uri)
     {
@@ -76,6 +89,7 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @return string
      */
     public function getToken()
@@ -84,8 +98,10 @@ class SoundCloud
     }
 
     /**
+     * Set token to use for authenticated API calls.
+     *
      * @param string $token
-     * @return SoundCloud
+     * @return $this
      */
     public function setToken($token)
     {
@@ -95,6 +111,7 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @return string
      */
     public function getHeaders()
@@ -103,8 +120,9 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @param array $headers
-     * @return SoundCloud
+     * @return $this
      */
     public function setHeaders(array $headers)
     {
@@ -114,6 +132,7 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @return string
      */
     public function getClientId()
@@ -122,8 +141,9 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @param string $clientId
-     * @return SoundCloud
+     * @return $this
      */
     public function setClientId($clientId)
     {
@@ -133,6 +153,7 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @return string
      */
     public function getClientSecret()
@@ -141,8 +162,9 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @param string $clientSecret
-     * @return SoundCloud
+     * @return $this
      */
     public function setClientSecret($clientSecret)
     {
@@ -152,6 +174,7 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @return string
      */
     public function getRedirectUri()
@@ -160,8 +183,9 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @param string $redirectUri
-     * @return SoundCloud
+     * @return $this
      */
     public function setRedirectUri($redirectUri)
     {
@@ -171,6 +195,7 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @return ClientInterface
      */
     public function getClient()
@@ -183,8 +208,9 @@ class SoundCloud
     }
 
     /**
+     * @internal
      * @param ClientInterface $client
-     * @return SoundCloud
+     * @return $this
      */
     public function setClient(ClientInterface $client)
     {
@@ -194,31 +220,16 @@ class SoundCloud
     }
 
     /**
-     * @return SoundCloud
-     */
-    public function returnJson()
-    {
-        $this->headers = array_merge($this->headers, ['Accept' => 'application/json']);
-
-        return $this;
-    }
-
-    /**
-     * @return SoundCloud
-     */
-    public function returnXml()
-    {
-        $this->headers = array_merge($this->headers, ['Accept' => 'application/xml']);
-
-        return $this;
-    }
-
-    /**
-     * @param array  $options
+     * Construct URI to authorization endpoint where user can delegate access to your application.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#connect">api/reference#connect</a>
+     * @param array $parameters
+     *  Custom parameters can be provided to overrule the default.
      * @param string $connectUri
+     *  Custom connect URI can be provided to overrule the default.
      * @return string
      */
-    public function getTokenAuthUri(array $options = [], $connectUri = 'https://soundcloud.com/connect')
+    public function getTokenAuthUri(array $parameters = [], $connectUri = 'https://soundcloud.com/connect')
     {
         $query = http_build_query(
             array_merge(
@@ -229,7 +240,7 @@ class SoundCloud
                     'response_type' => 'code',
                     'scope'         => 'non-expiring'
                 ],
-                $options
+                $parameters
             )
         );
 
@@ -237,6 +248,9 @@ class SoundCloud
     }
 
     /**
+     * Retrieve a token using user provided credentials.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#connect">api/reference#token</a>
      * @param string $username
      * @param string $password
      * @return mixed
@@ -261,21 +275,23 @@ class SoundCloud
     }
 
     /**
-     * @param string $code
-     * @param array  $body
+     * Retrieve a token using the authorization code obtained at your <tt>redirect_uri</tt>.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#connect">api/reference#token</a>
+     * @param string $authorization_code
      * @return mixed
      */
-    public function getTokenUsingCode($code, array $body = [])
+    public function getTokenUsingCode($authorization_code)
     {
         $options = [
             'headers' => $this->getHeaders(),
             'body'    => [
-                'code'          => $code,
+                'code'          => $authorization_code,
                 'client_id'     => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
                 'redirect_uri'  => $this->getRedirectUri(),
                 'grant_type'    => 'authorization_code'
-            ] + $body
+            ]
         ];
 
         $response = $this->getClient()->post($this->getApiBase().'/oauth2/token', $options);
@@ -284,21 +300,23 @@ class SoundCloud
     }
 
     /**
-     * @param string $refreshToken
-     * @param array  $body
+     * Retrieve a new token using a <tt>refresh_token</tt>.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#connect">api/reference#token</a>
+     * @param string $refresh_token
      * @return mixed
      */
-    public function refreshToken($refreshToken, array $body = [])
+    public function refreshToken($refresh_token)
     {
         $options = [
             'headers' => $this->getHeaders(),
             'body'    => [
-                'refresh_token' => $refreshToken,
+                'refresh_token' => $refresh_token,
                 'client_id'     => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
                 'redirect_uri'  => $this->getRedirectUri(),
                 'grant_type'    => 'refresh_token'
-            ] + $body
+            ]
         ];
 
         $response = $this->getClient()->post($this->getApiBase().'/oauth2/token', $options);
@@ -307,6 +325,9 @@ class SoundCloud
     }
 
     /**
+     * Return information about the authenticated user.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
      * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
      */
@@ -323,6 +344,47 @@ class SoundCloud
     }
 
     /**
+     * Return newest activities for the authenticated user.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#activities">api/reference#activities</a>
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function getActivities()
+    {
+        $options = [
+            'headers' => $this->getHeaders(),
+            'query'   => ['oauth_token' => $this->getToken()]
+        ];
+
+        $response = $this->getClient()->get($this->getApiBase().'/me/activities', $options);
+
+        return $this->handleResponse($response);
+    }
+
+    /**
+     * Return external profile connections (twitter, tumblr, facebook, etc) of the authenticated user.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#connections">api/reference#connections</a>
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function getConnections()
+    {
+        $options = [
+            'headers' => $this->getHeaders(),
+            'query'   => ['oauth_token' => $this->getToken()]
+        ];
+
+        $response = $this->getClient()->get($this->getApiBase().'/me/connections', $options);
+
+        return $this->handleResponse($response);
+    }
+
+    /**
+     * Returns recent tracks from users that the authenticated user follows.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#activities">api/reference#activities</a>
      * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
      */
@@ -339,6 +401,9 @@ class SoundCloud
     }
 
     /**
+     * Returns tracks owned by the authenticated user.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
      * @param array $params
      * @return mixed
      */
@@ -355,6 +420,9 @@ class SoundCloud
     }
 
     /**
+     * Returns playlists of the authenticated user.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
      * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
      */
@@ -371,6 +439,9 @@ class SoundCloud
     }
 
     /**
+     * Returns tracks favorited by the authenticated user.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
      * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
      */
@@ -387,13 +458,16 @@ class SoundCloud
     }
 
     /**
-     * @param integer $trackId
+     * Return details for given track.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#tracks">api/reference#tracks</a>
+     * @param integer $track_id
      * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function getTrack($trackId)
+    public function getTrack($track_id)
     {
-        if (!is_null($this->getToken())) {
+        if (null !== $this->getToken()) {
             $query = ['oauth_token' => $this->getToken()];
         } else {
             $query = ['client_id' => $this->getClientId()];
@@ -404,19 +478,22 @@ class SoundCloud
             'query'   => $query
         ];
 
-        $response = $this->getClient()->get($this->getApiBase().'/tracks/'.(int) $trackId, $options);
+        $response = $this->getClient()->get($this->getApiBase().'/tracks/'.(int) $track_id, $options);
 
         return $this->handleResponse($response);
     }
 
     /**
-     * @param integer $playlistId
+     * Return details for given playlist.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#playlists">api/reference#playlists</a>
+     * @param integer $playlist_id
      * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function getPlaylist($playlistId)
+    public function getPlaylist($playlist_id)
     {
-        if (!is_null($this->getToken())) {
+        if (null !== $this->getToken()) {
             $query = ['oauth_token' => $this->getToken()];
         } else {
             $query = ['client_id' => $this->getClientId()];
@@ -427,23 +504,22 @@ class SoundCloud
             'query'   => $query
         ];
 
-        $response = $this->getClient()->get($this->getApiBase().'/playlists/'.(int) $playlistId, $options);
+        $response = $this->getClient()->get($this->getApiBase().'/playlists/'.(int) $playlist_id, $options);
 
         return $this->handleResponse($response);
     }
 
     /**
-     * @param integer $trackId
+     * Return the streaming url for given track.
+     *
+     * @param integer $track_id
      * @return string
      */
-    public function getTrackStreamUri($trackId)
+    public function getTrackStreamUri($track_id)
     {
-        $headers = $this->getHeaders();
-        $this->returnJson();
-        $streamUri = $this->getTrack($trackId)['stream_url'];
-        $this->setHeaders($headers);
+        $streamUri = $this->getTrack($track_id)['stream_url'];
 
-        if (!is_null($this->getToken())) {
+        if (null !== $this->getToken()) {
             $query = ['oauth_token' => $this->getToken()];
         } else {
             $query = ['client_id' => $this->getClientId()];
@@ -461,6 +537,9 @@ class SoundCloud
     }
 
     /**
+     * Resolve and lookup an API resource based on given soundcloud.com URL.
+     *
+     * @see <a href="https://developers.soundcloud.com/docs/api/reference#resolve">api/reference#resolve</a>
      * @param string $uri
      * @return string
      * @throws \GuzzleHttp\Exception\ClientException
@@ -478,17 +557,25 @@ class SoundCloud
     }
 
     /**
-     * @param $nextPageHref
+     * Retrieve the next page using given URI.
+     *
+     * @param string $uri
      * @return mixed
      */
-    public function getNextPage($nextPageHref)
+    public function getNextPage($uri)
     {
+        if (null !== $this->getToken()) {
+            $query = ['oauth_token' => $this->getToken()];
+        } else {
+            $query = ['client_id' => $this->getClientId()];
+        }
+
         $options = [
             'headers' => $this->getHeaders(),
-            'query'   => ['client_id' => $this->getClientId()]
+            'query'   => $query
         ];
 
-        $response = $this->getClient()->get($nextPageHref, $options);
+        $response = $this->getClient()->get($uri, $options);
 
         return $this->handleResponse($response);
     }
@@ -503,10 +590,6 @@ class SoundCloud
 
         if (false !== stripos($contentType, 'application/json')) {
             return $response->json();
-        }
-
-        if (false !== stripos($contentType, 'application/xml')) {
-            return $response->xml();
         }
 
         return $response->getBody();
