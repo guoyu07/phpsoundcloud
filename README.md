@@ -33,17 +33,16 @@ use Alcohol\SoundCloud;
 
 $parameters = [
     'client_id' => 'yourId',
-    /* optional, but required for retrieving oauth token
+    // optional, but required for retrieving oauth token
     'client_secret' => 'yourSecret',
     'redirect_uri' => 'http://domain.tld/redirect'
-     */
 ];
 
+// see class for further documentation
 $soundcloud = new SoundCloud($parameters);
 
-```
 
-Documentation might be available [here](http://alcohol.github.io/docs).
+```
 
 ## Contributing
 
