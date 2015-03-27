@@ -12,7 +12,7 @@ A client written in PHP for SoundCloud's API.
 Either install directly from command line using composer:
 
 ``` sh
-$ composer require "alcohol/phpsoundcloud:~2.0"
+$ composer require "alcohol/phpsoundcloud:~3.0"
 ```
 
 or manually include it as a dependency in your composer.json:
@@ -20,7 +20,7 @@ or manually include it as a dependency in your composer.json:
 ``` javascript
 {
     "require": {
-        "alcohol/phpsoundcloud": "~2.0"
+        "alcohol/phpsoundcloud": "~3.0"
     }
 }
 ```
@@ -34,8 +34,10 @@ use Alcohol\SoundCloud;
 
 $options = [
     'client_id' => 'yourId',
+    /* optional, but required for retrieving oauth token
     'client_secret' => 'yourSecret',
     'redirect_uri' => 'http://domain.tld/redirect'
+     */
 ];
 
 $soundcloud = new SoundCloud($options);

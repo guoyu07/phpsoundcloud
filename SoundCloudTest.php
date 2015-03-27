@@ -34,7 +34,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
         if (!getenv('client_id')) {
             $this->mock = new Mock();
-            $this->soundcloud->getClient()->getEmitter()->attach($this->mock);
+            $this->soundcloud->getEmitter()->attach($this->mock);
         }
     }
 
