@@ -186,17 +186,11 @@ class SoundCloud extends Client
      */
     public function getTokenUsingCredentials($username, $password)
     {
-        $response = $this->post('/oauth2/token', [
-            'body' => [
-                'client_id' => $this->getClientId(),
-                'client_secret' => $this->getClientSecret(),
-                'username' => $username,
-                'password' => $password,
-                'grant_type' => 'password'
-            ]
+        return $this->getOauthToken([
+            'username' => $username,
+            'password' => $password,
+            'grant_type' => 'password',
         ]);
-
-        return $this->handleResponse($response);
     }
 
     /**
@@ -208,17 +202,11 @@ class SoundCloud extends Client
      */
     public function getTokenUsingCode($authorization_code)
     {
-        $response = $this->post('/oauth2/token', [
-            'body' => [
-                'code' => $authorization_code,
-                'client_id' => $this->getClientId(),
-                'client_secret' => $this->getClientSecret(),
-                'redirect_uri' => $this->getRedirectUri(),
-                'grant_type' => 'authorization_code'
-            ]
+        return $this->getOauthToken([
+            'code' => $authorization_code,
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => $this->getRedirectUri(),
         ]);
-
-        return $this->handleResponse($response);
     }
 
     /**
@@ -230,14 +218,24 @@ class SoundCloud extends Client
      */
     public function getTokenUsingRefreshToken($refresh_token)
     {
+        return $this->getOauthToken([
+            'refresh_token' => $refresh_token,
+            'grant_type' => 'refresh_token',
+            'redirect_uri' => $this->getRedirectUri(),
+        ]);
+    }
+
+    /**
+     * @param array $body
+     * @return mixed
+     */
+    protected function getOauthToken($body)
+    {
         $response = $this->post('/oauth2/token', [
             'body' => [
-                'refresh_token' => $refresh_token,
                 'client_id' => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
-                'redirect_uri' => $this->getRedirectUri(),
-                'grant_type' => 'refresh_token'
-            ]
+            ] + $body,
         ]);
 
         return $this->handleResponse($response);
