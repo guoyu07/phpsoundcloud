@@ -4,7 +4,6 @@ A client written in PHP for SoundCloud's API.
 
 [![Build Status](https://img.shields.io/travis/alcohol/phpsoundcloud/master.svg?style=flat-square)](https://travis-ci.org/alcohol/phpsoundcloud)
 [![License](https://img.shields.io/packagist/l/alcohol/phpsoundcloud.svg?style=flat-square)](https://packagist.org/packages/alcohol/phpsoundcloud)
-[![Version](https://img.shields.io/packagist/v/alcohol/phpsoundcloud.svg?style=flat-square)](https://packagist.org/packages/alcohol/phpsoundcloud)
 
 
 ## Installing
