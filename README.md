@@ -31,7 +31,7 @@ or manually include it as a dependency in your composer.json:
 
 use Alcohol\SoundCloud;
 
-$options = [
+$parameters = [
     'client_id' => 'yourId',
     /* optional, but required for retrieving oauth token
     'client_secret' => 'yourSecret',
@@ -39,7 +39,7 @@ $options = [
      */
 ];
 
-$soundcloud = new SoundCloud($options);
+$soundcloud = new SoundCloud($parameters);
 
 ```
 
