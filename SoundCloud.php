@@ -228,7 +228,7 @@ class SoundCloud extends Client
      * @param string $refresh_token
      * @return mixed
      */
-    public function refreshToken($refresh_token)
+    public function getTokenUsingRefreshToken($refresh_token)
     {
         $response = $this->post('/oauth2/token', [
             'body' => [
