@@ -42,7 +42,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
      * @group functional
      * @testdox Instantiating the SoundCloud class without required options throws a BadMethodCallException.
      *
-     * @expectedException \BadMethodCallException
+     * @expectedException \InvalidArgumentException
      */
     public function testSoundCloudConstructor()
     {
@@ -138,7 +138,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             $this->mock->addResponse(new Response(401));
         }
 
-        $this->soundcloud->setToken('invalid-token');
+        $this->soundcloud->getAuthSubscriber()->setOauthToken('invalid-token');
         $this->soundcloud->getStream();
     }
 
@@ -166,7 +166,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $this->soundcloud->setToken($token);
+        $this->soundcloud->getAuthSubscriber()->setOauthToken($token);
         $result = $this->soundcloud->getStream();
 
         $this->assertTrue(array_key_exists('collection', $result));
@@ -185,7 +185,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             $this->mock->addResponse(new Response(401));
         }
 
-        $this->soundcloud->setToken('invalid-token');
+        $this->soundcloud->getAuthSubscriber()->setOauthToken('invalid-token');
         $this->soundcloud->getFavorites();
     }
 
@@ -205,7 +205,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $this->soundcloud->setToken($token);
+        $this->soundcloud->getAuthSubscriber()->setOauthToken($token);
         $result = $this->soundcloud->getFavorites();
 
         $this->assertTrue(is_array($result));
@@ -222,7 +222,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             $this->mock->addResponse(new Response(401));
         }
 
-        $this->soundcloud->setToken('invalid-token');
+        $this->soundcloud->getAuthSubscriber()->setOauthToken('invalid-token');
 
         $this->soundcloud->getPlaylists();
     }
@@ -249,7 +249,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $this->soundcloud->setToken($token);
+        $this->soundcloud->getAuthSubscriber()->setOauthToken($token);
         $result = $this->soundcloud->getPlaylists();
 
         $this->assertTrue(is_array($result));
@@ -323,7 +323,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTrackStreamUriAuthenticated($token)
     {
-        $this->soundcloud->setToken($token);
+        $this->soundcloud->getAuthSubscriber()->setOauthToken($token);
 
         if (isset($this->mock)) {
             $this->mock->addMultiple([
@@ -396,7 +396,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveUriAuthenticated($token)
     {
-        $this->soundcloud->setToken($token);
+        $this->soundcloud->getAuthSubscriber()->setOauthToken($token);
 
         $playlistId = getenv('playlist_id') ?: '1';
         $playlistUri = getenv('playlist_uri') ?: 'https://soundcloud.com/myUsername/sets/myPlaylist';
@@ -431,7 +431,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
     {
         $playlistId = getenv('playlist_id') ?: '1';
         $playlistUri = getenv('playlist_uri') ?: 'https://soundcloud.com/myUsername/sets/myPlaylist';
-        $location = 'http://soundcloud.com/resolved/'.$playlistId.'?client_id='.$this->soundcloud->getClientId();
+        $location = 'http://soundcloud.com/resolved/'.$playlistId;
+        $location .= '?client_id='.$this->soundcloud->getAuthSubscriber()->getClientId();
 
         if (isset($this->mock)) {
             $this->mock->addMultiple([

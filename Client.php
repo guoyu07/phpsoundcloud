@@ -100,9 +100,9 @@ class Client extends GuzzleClient
     public function login($username, $password)
     {
         $response = $this->getTokenUsingCredentials($username, $password);
-        $response = $response->json();
+        $body = $this->handleResponse($response);
 
-        $this->getAuthSubscriber()->setOauthToken($response['access_token']);
+        $this->getAuthSubscriber()->setOauthToken($body['access_token']);
     }
 
     /**
