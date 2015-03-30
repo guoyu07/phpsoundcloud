@@ -9,6 +9,7 @@
 
 namespace Alcohol\SoundCloud;
 
+use GuzzleHttp\Collection;
 use GuzzleHttp\Event\HasEmitterInterface;
 use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Event\SubscriberInterface;
@@ -19,40 +20,19 @@ use GuzzleHttp\Event\BeforeEvent;
  */
 class AuthSubscriber implements SubscriberInterface
 {
-    /** @var string */
-    private $client_id;
-
-    /** @var string */
-    private $client_secret;
-
-    /** @var string */
-    private $redirect_uri;
-
-    /** @var string */
-    private $oauth_token;
+    /** @var Collection */
+    private $config;
 
     /**
-     * @param array $parameters
+     * @param array $config
      */
-    public function __construct(array $parameters)
+    public function __construct(array $config)
     {
-        if (!isset($parameters['client_id'])) {
-            throw new \BadMethodCallException('Missing required option: client_id');
-        }
-
-        $this->setClientId($parameters['client_id']);
-
-        if (isset($parameters['client_secret'])) {
-            $this->setClientSecret($parameters['client_secret']);
-        }
-
-        if (isset($parameters['redirect_uri'])) {
-            $this->setRedirectUri($parameters['redirect_uri']);
-        }
-
-        if (isset($parameters['oauth_token'])) {
-            $this->setOauthToken($parameters['oauth_token']);
-        }
+        $this->config = Collection::fromConfig($config, [
+            'client_secret' => null,
+            'redirect_uri' => null,
+            'oauth_token' => null,
+        ], ['client_id']);
     }
 
     /**
@@ -91,10 +71,10 @@ class AuthSubscriber implements SubscriberInterface
 
         $query = $request->getQuery();
 
-        if (null !== ($token = $this->getOauthToken())) {
+        if (null !== ($token = $this->config->get('oauth_token'))) {
             $query->set('oauth_token', $token);
         } else {
-            $query->set('client_id', $this->getClientId());
+            $query->set('client_id', $this->config->get('client_id'));
         }
     }
 
@@ -103,18 +83,15 @@ class AuthSubscriber implements SubscriberInterface
      */
     public function getClientId()
     {
-        return $this->client_id;
+        return $this->config->get('client_id');
     }
 
     /**
      * @param string $client_id
-     * @return $this
      */
     public function setClientId($client_id)
     {
-        $this->client_id = $client_id;
-
-        return $this;
+        $this->config->set('client_id', $client_id);
     }
 
     /**
@@ -122,18 +99,15 @@ class AuthSubscriber implements SubscriberInterface
      */
     public function getClientSecret()
     {
-        return $this->client_secret;
+        return $this->config->get('client_secret');
     }
 
     /**
      * @param string $client_secret
-     * @return $this
      */
     public function setClientSecret($client_secret)
     {
-        $this->client_secret = $client_secret;
-
-        return $this;
+        $this->config->set('client_secret', $client_secret);
     }
 
     /**
@@ -141,18 +115,15 @@ class AuthSubscriber implements SubscriberInterface
      */
     public function getRedirectUri()
     {
-        return $this->redirect_uri;
+        return $this->config->get('redirect_uri');
     }
 
     /**
      * @param string $redirect_uri
-     * @return $this
      */
     public function setRedirectUri($redirect_uri)
     {
-        $this->redirect_uri = $redirect_uri;
-
-        return $this;
+        $this->config->set('redirect_uri', $redirect_uri);
     }
 
     /**
@@ -160,17 +131,14 @@ class AuthSubscriber implements SubscriberInterface
      */
     public function getOauthToken()
     {
-        return $this->oauth_token;
+        return $this->config->get('oauth_token');
     }
 
     /**
      * @param string $oauth_token
-     * @return $this
      */
     public function setOauthToken($oauth_token)
     {
-        $this->oauth_token = $oauth_token;
-
-        return $this;
+        $this->config->set('oauth_token', $oauth_token);
     }
 }
