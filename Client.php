@@ -21,13 +21,18 @@ class Client extends GuzzleClient
     protected $auth_subscriber;
 
     /**
-     * @see <a href="http://soundcloud.com/you/apps/new">registering your application</a>
-     * @param array $parameters
-     *  An array containing the following keys (and their values):
+     * SoundCloud Client.
+     *
+     * The parameters array accepts the following options:
      *   - <tt>client_id</tt>
      *   - <tt>client_secret</tt> [optional]
      *   - <tt>redirect_uri</tt> [optional]
+     *   - <tt>oauth_token</tt> [optional]
+     *
+     * @see <a href="http://soundcloud.com/you/apps/new">registering your application</a>
+     * @param array $parameters
      * @param array $config
+     *  Override the default Guzzle configuration settings.
      */
     public function __construct(array $parameters, array $config = [])
     {
@@ -49,105 +54,17 @@ class Client extends GuzzleClient
     /**
      * @return AuthSubscriber
      */
-    protected function getAuthSubscriber()
+    public function getAuthSubscriber()
     {
         return $this->auth_subscriber;
     }
 
     /**
      * @param AuthSubscriber $auth_subscriber
-     * @return $this
      */
     protected function setAuthSubscriber(AuthSubscriber $auth_subscriber)
     {
         $this->auth_subscriber = $auth_subscriber;
-
-        return $this;
-    }
-
-    /**
-     * @internal
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->getAuthSubscriber()->getOauthToken();
-    }
-
-    /**
-     * Set token to use for authenticated API calls.
-     *
-     * @param string $token
-     * @return $this
-     */
-    public function setToken($token)
-    {
-        $this->getAuthSubscriber()->setOauthToken($token);
-
-        return $this;
-    }
-
-    /**
-     * @internal
-     * @return string
-     */
-    public function getClientId()
-    {
-        return $this->getAuthSubscriber()->getClientId();
-    }
-
-    /**
-     * @internal
-     * @param string $client_id
-     * @return $this
-     */
-    public function setClientId($client_id)
-    {
-        $this->getAuthSubscriber()->setClientId($client_id);
-
-        return $this;
-    }
-
-    /**
-     * @internal
-     * @return string
-     */
-    public function getClientSecret()
-    {
-        return $this->getAuthSubscriber()->getClientSecret();
-    }
-
-    /**
-     * @internal
-     * @param string $client_secret
-     * @return $this
-     */
-    public function setClientSecret($client_secret)
-    {
-        $this->getAuthSubscriber()->setClientSecret($client_secret);
-
-        return $this;
-    }
-
-    /**
-     * @internal
-     * @return string
-     */
-    public function getRedirectUri()
-    {
-        return $this->getAuthSubscriber()->getRedirectUri();
-    }
-
-    /**
-     * @internal
-     * @param string $redirect_uri
-     * @return $this
-     */
-    public function setRedirectUri($redirect_uri)
-    {
-        $this->getAuthSubscriber()->setRedirectUri($redirect_uri);
-
-        return $this;
     }
 
     /**
@@ -163,9 +80,9 @@ class Client extends GuzzleClient
     public function getTokenAuthUri(array $parameters = [], $connect_uri = 'https://soundcloud.com/connect')
     {
         $query = http_build_query(array_merge([
-            'client_id' => $this->getClientId(),
-            'client_secret' => $this->getClientSecret(),
-            'redirect_uri' => $this->getRedirectUri(),
+            'client_id' => $this->getAuthSubscriber()->getClientId(),
+            'client_secret' => $this->getAuthSubscriber()->getClientSecret(),
+            'redirect_uri' => $this->getAuthSubscriber()->getRedirectUri(),
             'response_type' => 'code',
             'scope' => 'non-expiring'
         ], $parameters));
@@ -185,7 +102,7 @@ class Client extends GuzzleClient
         $response = $this->getTokenUsingCredentials($username, $password);
         $response = $response->json();
 
-        $this->setToken($response['access_token']);
+        $this->getAuthSubscriber()->setOauthToken($response['access_token']);
     }
 
     /**
@@ -218,7 +135,7 @@ class Client extends GuzzleClient
         return $this->getOauthToken([
             'code' => $authorization_code,
             'grant_type' => 'authorization_code',
-            'redirect_uri' => $this->getRedirectUri(),
+            'redirect_uri' => $this->getAuthSubscriber()->getRedirectUri(),
         ]);
     }
 
@@ -234,7 +151,7 @@ class Client extends GuzzleClient
         return $this->getOauthToken([
             'refresh_token' => $refresh_token,
             'grant_type' => 'refresh_token',
-            'redirect_uri' => $this->getRedirectUri(),
+            'redirect_uri' => $this->getAuthSubscriber()->getRedirectUri(),
         ]);
     }
 
@@ -246,8 +163,8 @@ class Client extends GuzzleClient
     {
         $response = $this->post('/oauth2/token', [
             'body' => [
-                'client_id' => $this->getClientId(),
-                'client_secret' => $this->getClientSecret(),
+                'client_id' => $this->getAuthSubscriber()->getClientId(),
+                'client_secret' => $this->getAuthSubscriber()->getClientSecret(),
             ] + $body,
         ]);
 
