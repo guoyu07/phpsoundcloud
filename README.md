@@ -29,18 +29,20 @@ or manually include it as a dependency in your composer.json:
 ``` php
 <?php
 
-use Alcohol\SoundCloud;
+use Alcohol\SoundCloud\Client;
 
 $parameters = [
     'client_id' => 'yourId',
-    // optional, but required for retrieving oauth token
-    'client_secret' => 'yourSecret',
-    'redirect_uri' => 'http://domain.tld/redirect'
+    'client_secret' => 'yourSecret',                // optional, but required
+    'redirect_uri' => 'http://domain.tld/redirect'  // for retrieving oauth token
 ];
 
-// see class for further documentation
-$soundcloud = new SoundCloud($parameters);
+$soundcloud = new Client($parameters);
+$soundcloud->login($username, $password);
 
+$stream = $soundcloud->getStream();
+
+// see class for further documentation
 
 ```
 

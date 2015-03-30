@@ -7,16 +7,16 @@
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace Alcohol\Tests;
+namespace Alcohol\Tests\SoundCloud;
 
-use Alcohol\SoundCloud;
+use Alcohol\SoundCloud\Client;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 
 class SoundCloudTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var SoundCloud */
+    /** @var Client */
     protected $soundcloud;
 
     /** @var Mock */
@@ -30,7 +30,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             'redirect_uri' => getenv('redirect_uri') ?: 'http://domain.tld/redirect'
         ];
 
-        $this->soundcloud = new SoundCloud($options);
+        $this->soundcloud = new Client($options);
 
         if (!getenv('client_id')) {
             $this->mock = new Mock();
@@ -46,7 +46,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
      */
     public function testSoundCloudConstructor()
     {
-        new SoundCloud(array());
+        new Client(array());
     }
 
     /**
@@ -94,6 +94,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getTokenUsingCredentials with valid credentials should return a token.
+     * @medium
      * @group integration
      */
     public function testGetTokenUsingCredentials()
@@ -143,6 +144,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getStream with a valid token should return a stream array.
+     * @medium
      * @group integration
      * @depends testGetTokenUsingCredentials
      *
@@ -189,6 +191,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getFavorites with a valid token should return a favorites array.
+     * @medium
      * @group integration
      * @depends testGetTokenUsingCredentials
      *
@@ -224,6 +227,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getPlaylists with a valid token should return a playlists array.
+     * @medium
      * @group integration
      * @depends testGetTokenUsingCredentials
      *
@@ -252,6 +256,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getPlaylist anonymously returns an array with playlist details.
+     * @medium
      * @group integration
      */
     public function testGetPlaylistAnonymous()
@@ -278,6 +283,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getTrack anonymously returns an array with track details.
+     * @medium
      * @group integration
      */
     public function testGetTrackAnonymous()
@@ -304,6 +310,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getTrackStreamUri anonymously returns streaming uri.
+     * @medium
      * @group integration
      */
     public function testGetTrackStreamUriAnonymous()
@@ -337,6 +344,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling resolveUri anonymously returns correct resolved target uri.
+     * @medium
      * @group integration
      */
     public function testResolveUriAnonymous()

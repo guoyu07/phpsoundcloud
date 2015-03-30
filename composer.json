@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Alcohol\\": "."
+            "Alcohol\\SoundCloud\\": "."
         }
     },
     "require-dev": {
@@ -28,7 +28,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Alcohol\\Tests\\":"."
+            "Alcohol\\Tests\\SoundCloud\\":"."
         }
     },
     "extra": {
