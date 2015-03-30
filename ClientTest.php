@@ -207,6 +207,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
         $this->soundcloud->setToken($token);
         $result = $this->soundcloud->getFavorites();
+
         $this->assertTrue(is_array($result));
     }
 
@@ -222,6 +223,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->soundcloud->setToken('invalid-token');
+
         $this->soundcloud->getPlaylists();
     }
 
@@ -249,8 +251,11 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
         $this->soundcloud->setToken($token);
         $result = $this->soundcloud->getPlaylists();
+
         $this->assertTrue(is_array($result));
+
         $first = current($result);
+
         $this->assertEquals('playlist', $first['kind']);
     }
 
@@ -273,9 +278,9 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $this->soundcloud->setToken(null);
         $playlistId = getenv('playlist_id');
         $result = $this->soundcloud->getPlaylist($playlistId);
+
         $this->assertTrue(is_array($result));
         $this->assertTrue(array_key_exists('kind', $result));
         $this->assertEquals('playlist', $result['kind']);
@@ -300,12 +305,51 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             );
         }
 
-        $this->soundcloud->setToken(null);
         $trackId = getenv('track_id');
         $result = $this->soundcloud->getTrack($trackId);
+
         $this->assertTrue(is_array($result));
         $this->assertTrue(array_key_exists('kind', $result));
         $this->assertEquals('track', $result['kind']);
+    }
+
+    /**
+     * @testdox Calling getTrackStreamUri as an authenticated user returns streaming uri.
+     * @medium
+     * @group integration
+     * @depends testGetTokenUsingCredentials
+     *
+     * @param string $token
+     */
+    public function testGetTrackStreamUriAuthenticated($token)
+    {
+        $this->soundcloud->setToken($token);
+
+        if (isset($this->mock)) {
+            $this->mock->addMultiple([
+                new Response(
+                    200,
+                    ['Content-type' => 'application/json'],
+                    Stream::factory(json_encode([
+                        'kind' => 'track',
+                        'stream_url' => 'http://soundcloud/placeholder'
+                    ]))
+                ),
+                new Response(
+                    302,
+                    ['Location' => 'http://soundcloud.com/streamuri']
+                )
+            ]);
+        }
+
+        $trackId = getenv('track_id');
+        $result = $this->soundcloud->getTrackStreamUri($trackId);
+
+        $this->assertInternalType('string', $result);
+
+        if (isset($this->mock)) {
+            $this->assertEquals('http://soundcloud.com/streamuri', $result);
+        }
     }
 
     /**
@@ -332,13 +376,49 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             ]);
         }
 
-        $this->soundcloud->setToken(null);
         $trackId = getenv('track_id');
         $result = $this->soundcloud->getTrackStreamUri($trackId);
+
         $this->assertInternalType('string', $result);
 
         if (isset($this->mock)) {
             $this->assertEquals('http://soundcloud.com/streamuri', $result);
+        }
+    }
+
+    /**
+     * @testdox Calling resolveUri as an authenticated user returns correct resolved target uri.
+     * @medium
+     * @group integration
+     * @depends testGetTokenUsingCredentials
+     *
+     * @param string $token
+     */
+    public function testResolveUriAuthenticated($token)
+    {
+        $this->soundcloud->setToken($token);
+
+        $playlistId = getenv('playlist_id') ?: '1';
+        $playlistUri = getenv('playlist_uri') ?: 'https://soundcloud.com/myUsername/sets/myPlaylist';
+        $location = 'http://soundcloud.com/resolved/'.$playlistId.'?oauth_token='.$token;
+
+        if (isset($this->mock)) {
+            $this->mock->addMultiple([
+                new Response(
+                    302,
+                    ['Location' => $location]
+                ),
+                new Response(200)
+            ]);
+        }
+
+        $result = $this->soundcloud->resolveUri($playlistUri);
+
+        $this->assertEquals(1, preg_match('/(\d+)/', $result, $matches));
+        $this->assertEquals($playlistId, $matches[1]);
+
+        if (isset($this->mock)) {
+            $this->assertEquals($location, $result);
         }
     }
 
@@ -349,26 +429,27 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveUriAnonymous()
     {
-        $this->soundcloud->setToken(null);
         $playlistId = getenv('playlist_id') ?: '1';
         $playlistUri = getenv('playlist_uri') ?: 'https://soundcloud.com/myUsername/sets/myPlaylist';
+        $location = 'http://soundcloud.com/resolved/'.$playlistId.'?client_id='.$this->soundcloud->getClientId();
 
         if (isset($this->mock)) {
             $this->mock->addMultiple([
                 new Response(
                     302,
-                    ['Location' => 'http://soundcloud.com/resolved/' . $playlistId]
+                    ['Location' => $location]
                 ),
                 new Response(200)
             ]);
         }
 
         $result = $this->soundcloud->resolveUri($playlistUri);
+
         $this->assertEquals(1, preg_match('/(\d+)/', $result, $matches));
         $this->assertEquals($playlistId, $matches[1]);
 
         if (isset($this->mock)) {
-            $this->assertEquals('http://soundcloud.com/resolved/' . $playlistId, $result);
+            $this->assertEquals($location, $result);
         }
     }
 }
