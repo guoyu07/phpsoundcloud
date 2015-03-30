@@ -39,9 +39,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @testdox Instantiating the SoundCloud class without required options throws a InvalidArgumentException.
      * @group functional
-     * @testdox Instantiating the SoundCloud class without required options throws a BadMethodCallException.
-     *
      * @expectedException \InvalidArgumentException
      */
     public function testSoundCloudConstructor()
@@ -50,8 +49,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group functional
      * @testdox Calling getTokenAuthUri returns a valid uri.
+     * @group functional
      */
     public function testGetTokenAuthUri()
     {
@@ -94,8 +93,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getTokenUsingCredentials with valid credentials should return a token.
-     * @medium
      * @group integration
+     * @medium
      */
     public function testGetTokenUsingCredentials()
     {
@@ -144,8 +143,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getStream with a valid token should return a stream array.
-     * @medium
      * @group integration
+     * @medium
      * @depends testGetTokenUsingCredentials
      *
      * @param string $token
@@ -191,8 +190,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getFavorites with a valid token should return a favorites array.
-     * @medium
      * @group integration
+     * @medium
      * @depends testGetTokenUsingCredentials
      *
      * @param string $token
@@ -229,8 +228,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getPlaylists with a valid token should return a playlists array.
-     * @medium
      * @group integration
+     * @medium
      * @depends testGetTokenUsingCredentials
      *
      * @param string $token
@@ -315,8 +314,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling getTrackStreamUri as an authenticated user returns streaming uri.
-     * @medium
      * @group integration
+     * @medium
      * @depends testGetTokenUsingCredentials
      *
      * @param string $token
@@ -388,8 +387,8 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @testdox Calling resolveUri as an authenticated user returns correct resolved target uri.
-     * @medium
      * @group integration
+     * @medium
      * @depends testGetTokenUsingCredentials
      *
      * @param string $token
