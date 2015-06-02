@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * (c) Rob Bast <rob.bast@gmail.com>
  *
  * For the full copyright and license information, please view
@@ -10,11 +10,11 @@
 namespace Alcohol\Tests\SoundCloud;
 
 use Alcohol\SoundCloud\Client;
-use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
+use GuzzleHttp\Subscriber\Mock;
 
-class SoundCloudTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends \PHPUnit_Framework_TestCase
 {
     /** @var Client */
     protected $soundcloud;
@@ -27,7 +27,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
         $options = [
             'client_id' => getenv('client_id') ?: 'myId',
             'client_secret' => getenv('client_secret') ?: 'mySecret',
-            'redirect_uri' => getenv('redirect_uri') ?: 'http://domain.tld/redirect'
+            'redirect_uri' => getenv('redirect_uri') ?: 'http://domain.tld/redirect',
         ];
 
         $this->soundcloud = new Client($options);
@@ -67,11 +67,11 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
             list($keys[], /* $value */) = explode('=', $pair);
         }
 
-        $this->assertTrue(in_array('client_id', $keys));
-        $this->assertTrue(in_array('client_secret', $keys));
-        $this->assertTrue(in_array('redirect_uri', $keys));
-        $this->assertTrue(in_array('response_type', $keys));
-        $this->assertTrue(in_array('scope', $keys));
+        $this->assertTrue(in_array('client_id', $keys, true));
+        $this->assertTrue(in_array('client_secret', $keys, true));
+        $this->assertTrue(in_array('redirect_uri', $keys, true));
+        $this->assertTrue(in_array('response_type', $keys, true));
+        $this->assertTrue(in_array('scope', $keys, true));
     }
 
     /**
@@ -110,7 +110,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                         'access_token' => 'dummy-access-token',
                         'expires_in' => 300,
                         'scope' => '*',
-                        'refresh_token' => 'dummy-refresh-token'
+                        'refresh_token' => 'dummy-refresh-token',
                     ]))
                 )
             );
@@ -159,7 +159,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     Stream::factory(json_encode([
                         'collection' => [],
                         'next_href' => 'http://soundcloud.com/next',
-                        'future_href' => 'http://soundcloud.com/future'
+                        'future_href' => 'http://soundcloud.com/future',
                     ]))
                 )
             );
@@ -242,7 +242,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     200,
                     ['Content-type' => 'application/json'],
                     Stream::factory(json_encode([
-                        ['kind' => 'playlist']
+                        ['kind' => 'playlist'],
                     ]))
                 )
             );
@@ -271,7 +271,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     200,
                     ['Content-type' => 'application/json'],
                     Stream::factory(json_encode([
-                        'kind' => 'playlist'
+                        'kind' => 'playlist',
                     ]))
                 )
             );
@@ -298,7 +298,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     200,
                     ['Content-type' => 'application/json'],
                     Stream::factory(json_encode([
-                        'kind' => 'track'
+                        'kind' => 'track',
                     ]))
                 )
             );
@@ -331,13 +331,13 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     ['Content-type' => 'application/json'],
                     Stream::factory(json_encode([
                         'kind' => 'track',
-                        'stream_url' => 'http://soundcloud/placeholder'
+                        'stream_url' => 'http://soundcloud/placeholder',
                     ]))
                 ),
                 new Response(
                     302,
                     ['Location' => 'http://soundcloud.com/streamuri']
-                )
+                ),
             ]);
         }
 
@@ -365,13 +365,13 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     ['Content-type' => 'application/json'],
                     Stream::factory(json_encode([
                         'kind' => 'track',
-                        'stream_url' => 'http://soundcloud/placeholder'
+                        'stream_url' => 'http://soundcloud/placeholder',
                     ]))
                 ),
                 new Response(
                     302,
                     ['Location' => 'http://soundcloud.com/streamuri']
-                )
+                ),
             ]);
         }
 
@@ -407,7 +407,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     302,
                     ['Location' => $location]
                 ),
-                new Response(200)
+                new Response(200),
             ]);
         }
 
@@ -439,7 +439,7 @@ class SoundCloudTest extends \PHPUnit_Framework_TestCase
                     302,
                     ['Location' => $location]
                 ),
-                new Response(200)
+                new Response(200),
             ]);
         }
 

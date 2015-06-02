@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * (c) Rob Bast <rob.bast@gmail.com>
  *
  * For the full copyright and license information, please view
@@ -10,10 +10,10 @@
 namespace Alcohol\SoundCloud;
 
 use GuzzleHttp\Collection;
+use GuzzleHttp\Event\BeforeEvent;
 use GuzzleHttp\Event\HasEmitterInterface;
 use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Event\SubscriberInterface;
-use GuzzleHttp\Event\BeforeEvent;
 
 /**
  * Custom authentication listener that handles the "soundcloud" auth type.

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * (c) Rob Bast <rob.bast@gmail.com>
  *
  * For the full copyright and license information, please view
@@ -9,8 +9,8 @@
 
 namespace Alcohol\SoundCloud;
 
-use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Message\ResponseInterface;
 
 /**
  * Simplistic SoundCloud API wrapper.
@@ -84,7 +84,7 @@ class Client extends GuzzleClient
             'client_secret' => $this->getAuthSubscriber()->getClientSecret(),
             'redirect_uri' => $this->getAuthSubscriber()->getRedirectUri(),
             'response_type' => 'code',
-            'scope' => 'non-expiring'
+            'scope' => 'non-expiring',
         ], $parameters));
 
         return sprintf('%s?%s', $connect_uri, $query);
@@ -111,8 +111,8 @@ class Client extends GuzzleClient
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#connect">api/reference#token</a>
      * @param string $username
      * @param string $password
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getTokenUsingCredentials($username, $password)
     {
@@ -175,8 +175,8 @@ class Client extends GuzzleClient
      * Return information about the authenticated user.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getMe()
     {
@@ -189,8 +189,8 @@ class Client extends GuzzleClient
      * Return newest activities for the authenticated user.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#activities">api/reference#activities</a>
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getActivities()
     {
@@ -203,8 +203,8 @@ class Client extends GuzzleClient
      * Return external profile connections (twitter, tumblr, facebook, etc) of the authenticated user.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#connections">api/reference#connections</a>
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getConnections()
     {
@@ -217,8 +217,8 @@ class Client extends GuzzleClient
      * Returns recent tracks from users that the authenticated user follows.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#activities">api/reference#activities</a>
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getStream()
     {
@@ -245,8 +245,8 @@ class Client extends GuzzleClient
      * Returns playlists of the authenticated user.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getPlaylists()
     {
@@ -259,8 +259,8 @@ class Client extends GuzzleClient
      * Returns tracks favorited by the authenticated user.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#me">api/reference#me</a>
-     * @return mixed
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getFavorites()
     {
@@ -273,9 +273,9 @@ class Client extends GuzzleClient
      * Return details for given track.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#tracks">api/reference#tracks</a>
-     * @param integer $track_id
-     * @return mixed
+     * @param int $track_id
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getTrack($track_id)
     {
@@ -288,9 +288,9 @@ class Client extends GuzzleClient
      * Return details for given playlist.
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#playlists">api/reference#playlists</a>
-     * @param integer $playlist_id
-     * @return mixed
+     * @param int $playlist_id
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return mixed
      */
     public function getPlaylist($playlist_id)
     {
@@ -302,7 +302,7 @@ class Client extends GuzzleClient
     /**
      * Return the streaming url for given track.
      *
-     * @param integer $track_id
+     * @param int $track_id
      * @return string
      */
     public function getTrackStreamUri($track_id)
@@ -319,8 +319,8 @@ class Client extends GuzzleClient
      *
      * @see <a href="https://developers.soundcloud.com/docs/api/reference#resolve">api/reference#resolve</a>
      * @param string $uri
-     * @return string
      * @throws \GuzzleHttp\Exception\ClientException
+     * @return string
      */
     public function resolveUri($uri)
     {
