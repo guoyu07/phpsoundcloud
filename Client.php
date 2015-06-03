@@ -36,7 +36,7 @@ class Client extends GuzzleClient
      */
     public function __construct(array $parameters, array $config = [])
     {
-        $config = array_merge([
+        $config = array_merge_recursive([
             'base_url' => 'https://api.soundcloud.com',
             'defaults' => [
                 'headers' => [
