@@ -279,7 +279,7 @@ class Client extends GuzzleClient
      */
     public function getTrack($track_id)
     {
-        $response = $this->get('/tracks/'.(int) $track_id, ['auth' => 'soundcloud']);
+        $response = $this->get('/tracks/' . (int) $track_id, ['auth' => 'soundcloud']);
 
         return $this->handleResponse($response);
     }
@@ -294,7 +294,7 @@ class Client extends GuzzleClient
      */
     public function getPlaylist($playlist_id)
     {
-        $response = $this->get('/playlists/'.(int) $playlist_id, ['auth' => 'soundcloud']);
+        $response = $this->get('/playlists/' . (int) $playlist_id, ['auth' => 'soundcloud']);
 
         return $this->handleResponse($response);
     }

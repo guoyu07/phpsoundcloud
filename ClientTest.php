@@ -399,7 +399,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $playlistId = getenv('playlist_id') ?: '1';
         $playlistUri = getenv('playlist_uri') ?: 'https://soundcloud.com/myUsername/sets/myPlaylist';
-        $location = 'http://soundcloud.com/resolved/'.$playlistId.'?oauth_token='.$token;
+        $location = 'http://soundcloud.com/resolved/' . $playlistId . '?oauth_token=' . $token;
 
         if (isset($this->mock)) {
             $this->mock->addMultiple([
@@ -430,8 +430,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $playlistId = getenv('playlist_id') ?: '1';
         $playlistUri = getenv('playlist_uri') ?: 'https://soundcloud.com/myUsername/sets/myPlaylist';
-        $location = 'http://soundcloud.com/resolved/'.$playlistId;
-        $location .= '?client_id='.$this->soundcloud->getAuthSubscriber()->getClientId();
+        $location = 'http://soundcloud.com/resolved/' . $playlistId;
+        $location .= '?client_id=' . $this->soundcloud->getAuthSubscriber()->getClientId();
 
         if (isset($this->mock)) {
             $this->mock->addMultiple([
