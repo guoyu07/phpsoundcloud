@@ -348,9 +348,7 @@ class Client extends GuzzleClient
      */
     protected function handleResponse(ResponseInterface $response)
     {
-        $content_type = $response->getHeader('Content-type');
-
-        if (false !== stripos($content_type, 'application/json')) {
+        if (false !== stripos($response->getHeader('Content-type'), 'application/json')) {
             return $response->json();
         }
 
