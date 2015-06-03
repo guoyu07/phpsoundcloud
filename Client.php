@@ -159,7 +159,7 @@ class Client extends GuzzleClient
      * @param array $body
      * @return mixed
      */
-    protected function getOauthToken($body)
+    protected function getOauthToken(array $body)
     {
         $response = $this->post('/oauth2/token', [
             'body' => [
