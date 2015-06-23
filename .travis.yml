@@ -1,20 +1,27 @@
 language: php
 
+env:
+  secure: qRZwxz4hI21SQ5XjpVWtDxywcXUroiE9oppQCIzWMWl99z/vBLLndJofi4LmoufxYTlqj/B8Im5haqCLpNOEUEB9659rF/OziJ+Xn373h9OLsFQ1j5QEKq5Fv8UB6/Ram/H6C31jgG3w7+P48Bsb59mR9vyEQmUqzM9URqvIzlc=
+
+cache:
+  directories:
+  - $HOME/.composer/cache
+
 php:
-  - 5.6
-  - 5.5
-  - 5.4
-  - 7
-  - hhvm
+- 5.6
+- 5.5
+- 5.4
+- 7
+- hhvm
 
 matrix:
   allow_failures:
-    - php: hhvm
-    - php: 7
+  - php: hhvm
 
 before_script:
-  - composer self-update -n
-  - composer install -o -n
+- composer config --global github-oauth.github.com $GITHUB_OAUTH_TOKEN
+- composer self-update --no-interaction --no-progress
+- composer install --no-interaction --no-progress --prefer-dist
 
 script:
-  - vendor/bin/phpunit
+- vendor/bin/phpunit
