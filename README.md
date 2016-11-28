@@ -1,3 +1,7 @@
+# ABANDONED
+
+This package is not maintained. If you would like to take ownership, open a Github issue and a transfer can be arranged.
+
 # alcohol/phpsoundcloud
 
 A client written in PHP for SoundCloud's API.
